@@ -1,0 +1,81 @@
+﻿<Window x:Class="_21_07_20_FileSearcher_Interview_question.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:_21_07_20_FileSearcher_Interview_question"
+        xmlns:ViewModelsAndLogic ="clr-namespace:_21_07_20_FileSearcher_Interview_question.VMandLogic"
+        mc:Ignorable="d"
+        Title="MainWindow" Width="{Binding ThisWidth, Source={StaticResource SomeValuesProvider}}" Height="{Binding ThisHeight, Source={StaticResource SomeValuesProvider}}"
+        WindowStartupLocation="Manual" Top="0" 
+        ResizeMode="NoResize"    
+        Name="MainWindowWindow"
+        >
+    <Window.Resources>
+        <ImageBrush x:Key="OpenFolderImageRegular" ImageSource="img/file-open-folder-icon-regular-small.png"  Stretch="UniformToFill"/>
+        <ImageBrush x:Key="OpenFolderImageHover" ImageSource="img/file-open-folder-icon-hover-small.png"  Stretch="UniformToFill"/>
+
+        <Style x:Key="AddButtonImageStyle" TargetType="{x:Type Button}">
+            <Setter Property="Background" Value="{StaticResource OpenFolderImageRegular}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background"  Value="{StaticResource OpenFolderImageHover}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <ViewModelsAndLogic:ViewModel x:Key="ViewModel"/>
+
+    </Window.Resources>
+
+    <StackPanel>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+            <TextBox Text="{Binding StartSearchPath, Source={StaticResource ViewModel}}" Margin="10" TextWrapping="Wrap" Width="{Binding TexTBox1Width, Source={StaticResource SomeValuesProvider}}"/>
+            <Button Command="{Binding TakeStartSearchPathWithDialog_DelegComm, Source={StaticResource ViewModel}}" Padding="5" Style="{StaticResource AddButtonImageStyle}" Width="26" Height="26" ToolTip="Press to take the folder path"></Button>
+        </StackPanel>
+        <TextBox Text="{Binding SearchPattern, Source={StaticResource ViewModel}}" Margin="10" Width="{Binding DefaultControlWidth, Source={StaticResource SomeValuesProvider}}"/>
+        <TextBlock x:Name="oneLineResult" Height="15" Width="300" Text="{Binding LstViewItem, Source={StaticResource ViewModel}}"
+                   Visibility="Collapsed"
+                   />
+        <ProgressBar x:Name="progressBar" 
+                     Value="{Binding ProgressBarValue, Source={StaticResource ViewModel}}" Margin="10" Height="10"
+                     MaxHeight="{Binding ProgressBarMax, Source={StaticResource ViewModel}}"
+                     Width="{Binding DefaultControlWidth, Source={StaticResource SomeValuesProvider}}"
+
+                     />
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+            <Button Command="{Binding StartSearch_RelayComm, Source={StaticResource ViewModel}}" Margin="10" Width="70" Click="Button_Click">Search</Button>
+            <CheckBox IsChecked="{Binding ElementName=MainWindowWindow, Path=ExtensionInFileNameDependency}" Margin="10">file extensions</CheckBox>
+        </StackPanel>
+        <ListView x:Name="resultsListView" Width="{Binding DefaultControlWidth, Source={StaticResource SomeValuesProvider}}" 
+                  MinHeight="{Binding DefaultControlheight, Source={StaticResource SomeValuesProvider}}"
+                  Height="{Binding MaxControlheight, Source={StaticResource SomeValuesProvider}}"
+                  
+                  
+                  >
+            <ListView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <UniformGrid Columns="1"/>
+                </ItemsPanelTemplate>
+            </ListView.ItemsPanel>
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel>
+                        <TextBlock Height="20" Text="{Binding}"></TextBlock>
+                    </StackPanel>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+
+    </StackPanel>
+</Window>
